@@ -2,14 +2,18 @@ package db
 
 import (
 	"encoding/csv"
-	"fmt"
 	"io"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 
 	"github.com/joaoh82/housinganywhere/pkg/geo"
+
+	"github.com/joaoh82/housinganywhere/pkg/domain"
 )
+
+var sortedList domain.Locations
 
 // CSVFile tyoe
 type CSVFile struct {
@@ -34,7 +38,7 @@ func NewCSVFile(path string) *CSVFile {
 	return &CSVFile{r: r}
 }
 
-func (f *CSVFile) ReadList() error {
+func (f *CSVFile) ReadList() (domain.Locations, error) {
 
 	for {
 		rec, err := f.r.Read()
@@ -43,7 +47,7 @@ func (f *CSVFile) ReadList() error {
 				break
 			}
 			//log.Fatal(err)
-			return err
+			return nil, err
 		}
 
 		// Checking if record is a string or a number, if it is a string
@@ -58,18 +62,23 @@ func (f *CSVFile) ReadList() error {
 		long := rec[2]
 		latFloat, err := strconv.ParseFloat(lat, 64)
 		if err != nil {
-			//log.Fatalf("Record, error: %v, %v", lat, err)
-			return err
+			return nil, err
 		}
 		longFloat, err := strconv.ParseFloat(long, 64)
 		if err != nil {
-			//log.Fatalf("Record, error: %v, %v", long, err)
-			return err
+			return nil, err
 		}
-
 		// calculate scores; THIS EXTERNAL METHOD CANNOT BE CHANGED
 		distance := geo.Distance(51.925146, 4.478617, latFloat, longFloat)
-		fmt.Printf("%v: %f\n", id, distance)
+
+		sortedList = append(sortedList, domain.Location{
+			Id:       id,
+			Lat:      latFloat,
+			Long:     longFloat,
+			Distance: distance,
+		})
 	}
-	return nil
+	sort.Sort(sortedList)
+
+	return sortedList, nil
 }
