@@ -15,6 +15,10 @@ import (
 
 var sortedList domain.Locations
 
+// OriginLocation stores the location of Housing Anywhere, or
+// any other place of origin to calculate the distance
+var OriginLocation domain.Location
+
 // CSVFile tyoe
 type CSVFile struct {
 	r *csv.Reader
@@ -39,7 +43,6 @@ func NewCSVFile(path string) *CSVFile {
 }
 
 func (f *CSVFile) ReadList() (domain.Locations, error) {
-
 	for {
 		rec, err := f.r.Read()
 		if err != nil {
@@ -69,7 +72,7 @@ func (f *CSVFile) ReadList() (domain.Locations, error) {
 			return nil, err
 		}
 		// calculate scores; THIS EXTERNAL METHOD CANNOT BE CHANGED
-		distance := geo.Distance(51.925146, 4.478617, latFloat, longFloat)
+		distance := geo.Distance(OriginLocation.Lat, OriginLocation.Long, latFloat, longFloat)
 
 		sortedList = append(sortedList, domain.Location{
 			Id:       id,
