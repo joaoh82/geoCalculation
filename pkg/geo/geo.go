@@ -7,7 +7,7 @@ func haversin(theta float64) float64 {
 	return math.Pow(math.Sin(theta/2), 2)
 }
 
-// round helper function to round the distances mathmatically
+// round helper function to round the distances mathematically
 func round(val float64, roundOn float64, places int) (newVal float64) {
 	var round float64
 	pow := math.Pow(10, float64(places))

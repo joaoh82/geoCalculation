@@ -41,7 +41,7 @@ func NewCSVFile(path string) *CSVFile {
 	return &CSVFile{r: r}
 }
 
-// ReadList method is responsable for reading through the csv.Reader
+// ReadList method is responsible for reading through the csv.Reader
 // one record at a time using the Read() function from csv.Reader.Read()
 func (f *CSVFile) ReadList() (domain.Locations, error) {
 	for {

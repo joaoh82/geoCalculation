@@ -13,7 +13,7 @@ import (
 // Reaading the path using a commeand-line flag (the returned value is a pointer)
 var opts struct {
 	Path string `short:"p" description:"Path of the CSV file" required:"true"`
-	DB   string `short:"d" description:"Type of db or data that is comming in" required:"true"`
+	DB   string `short:"d" description:"Type of db or data that is coming in" required:"true"`
 }
 
 // Constants representing the types of data types that could be informed in the tags
@@ -31,7 +31,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Checking to see which type of data was provided (Onyl csv actually implemented at the moment)
+	// Checking to see which type of data was provided (Only csv actually implemented at the moment)
 	switch opts.DB {
 	case csv:
 		// Setting the location of Housing Anywhere
