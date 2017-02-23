@@ -37,7 +37,6 @@ func NewCSVFile(path string) *CSVFile {
 		log.Fatal(err)
 	}
 	r := csv.NewReader(csvIn)
-	// csv := CSVFile{r: r}
 
 	return &CSVFile{r: r}
 }
@@ -55,7 +54,7 @@ func (f *CSVFile) ReadList() (domain.Locations, error) {
 
 		// Checking if record is a string or a number, if it is a string
 		// means we are on the first row and we move to the next one
-		if _, err := strconv.Atoi(rec[0]); err != nil {
+		if rec[0] == "id" {
 			rec, err = f.r.Read()
 		}
 
