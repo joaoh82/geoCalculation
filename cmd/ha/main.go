@@ -25,10 +25,13 @@ const (
 var database db.Database
 
 func main() {
+	// Parsing the flags
 	_, err := flags.Parse(&opts)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Checking to see which type of data was provided (Onyl csv actually implemented at the moment)
 	switch opts.DB {
 	case csv:
 		// Setting the location of Housing Anywhere
@@ -45,6 +48,8 @@ func main() {
 	}
 }
 
+// handleResults handles the results and presents the 5 closests
+// and 5 furthest locations from housing anywhere
 func handleResults() {
 	list, err := database.ReadList()
 	if err != nil {
@@ -52,11 +57,14 @@ func handleResults() {
 	}
 	fmt.Println("\n//---------------//5 CLOSEST LOCATIONS//--------------//")
 	fmt.Println("\n//ID: DISTANCE (in meters)")
+	// Slicing the ordered list with the top 5 results
 	for _, c := range list[:5] {
 		fmt.Printf("%v: %.0fm\n", c.Id, c.Distance)
 	}
+
 	fmt.Println("\n//---------------//5 FURTHEST LOCATIONS//--------------//")
 	fmt.Println("\n//ID: DISTANCE (in meters)")
+	// Slicing the list with the bottom 5 results
 	for _, c := range list[len(list)-5:] {
 		fmt.Printf("%v: %.0fm\n", c.Id, c.Distance)
 	}

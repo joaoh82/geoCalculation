@@ -41,6 +41,8 @@ func NewCSVFile(path string) *CSVFile {
 	return &CSVFile{r: r}
 }
 
+// ReadList method is responsable for reading through the csv.Reader
+// one record at a time using the Read() function from csv.Reader.Read()
 func (f *CSVFile) ReadList() (domain.Locations, error) {
 	for {
 		rec, err := f.r.Read()
@@ -48,7 +50,6 @@ func (f *CSVFile) ReadList() (domain.Locations, error) {
 			if err == io.EOF {
 				break
 			}
-			//log.Fatal(err)
 			return nil, err
 		}
 
@@ -56,12 +57,18 @@ func (f *CSVFile) ReadList() (domain.Locations, error) {
 		// means we are on the first row and we move to the next one
 		if rec[0] == "id" {
 			rec, err = f.r.Read()
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		// Getting lat and long values
 		id := rec[0]
 		lat := rec[1]
 		long := rec[2]
+
+		// Since the record from the CSV is returned as a slice of string
+		// we have to convert it to a float64
 		latFloat, err := strconv.ParseFloat(lat, 64)
 		if err != nil {
 			return nil, err
@@ -73,6 +80,7 @@ func (f *CSVFile) ReadList() (domain.Locations, error) {
 		// calculate scores; THIS EXTERNAL METHOD CANNOT BE CHANGED
 		distance := geo.Distance(OriginLocation.Lat, OriginLocation.Long, latFloat, longFloat)
 
+		// Adds the location to the list using our struct type dnbLocation
 		sortedList = append(sortedList, domain.Location{
 			Id:       id,
 			Lat:      latFloat,
@@ -80,6 +88,7 @@ func (f *CSVFile) ReadList() (domain.Locations, error) {
 			Distance: distance,
 		})
 	}
+	// Sorts the list using the standard sorting algorithm
 	sort.Sort(sortedList)
 
 	return sortedList, nil
